@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Create axios instance with base configuration
 const api = axios.create({
-  baseURL: "http://localhost:5000/api/v4",
+  baseURL: "https://shopdirect-api.onrender.com/api/v4",
   withCredentials: true,
   headers: {
     Accept: "application/json",
