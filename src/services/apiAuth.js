@@ -1,4 +1,4 @@
-import axios from "axios";
+ import axios from "axios";
 
 // Create axios instance with base configuration
 const api = axios.create({
@@ -114,4 +114,5 @@ export async function updatePassword({
   } catch (err) {
     throw new Error(err.response?.data?.message || "Error updating password");
   }
-}
+} 
+ 

@@ -290,7 +290,7 @@ const Header = () => {
         <UserSection onClick={() => setShowUserMenu(!showUserMenu)}>
           <UserAvatar>
             {user?.photo ? (
-              <UserAvatarImage src={`http://localhost:5000/img/users/${user?.photo}`} alt={user?.name || 'User'} />
+              <UserAvatarImage src={`http://localhost:3000/img/users/${user?.photo}`} alt={user?.name || 'User'} />
             ) : (
               <UserAvatarFallback>
                 {user?.name?.charAt(0) || 'U'}

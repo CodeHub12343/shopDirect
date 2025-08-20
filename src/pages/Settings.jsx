@@ -443,7 +443,7 @@ const formatDate = (dateString) => {
 const getImageUrl = (imagePath, type = 'users') => {
   if (!imagePath) return null;
   if (imagePath.startsWith('http')) return imagePath;
-  return `http://127.0.0.1:5000/img/${type}/${imagePath}`;
+  return `http://localhost:3000/img/${type}/${imagePath}`;
 };
 
 const Settings = () => {

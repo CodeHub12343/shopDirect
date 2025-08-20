@@ -507,7 +507,7 @@ const Products = () => {
  /*  const getImageUrl = (imagePath) => {
     if (!imagePath) return null;
     if (imagePath.startsWith('http')) return imagePath;
-    return `http://127.0.0.1:5000/${imagePath}`;
+    return `http://localhost:3000/${imagePath}`;
   }; */
   
   // Handle image load error
@@ -760,7 +760,7 @@ const Products = () => {
               <ProductImage>
                 {product.imageCover && !imageErrors.has(product.id) ? (
                   <ProductImageCover 
-                  src={`http://localhost:5000/img/products/${product.imageCover}`}
+                  src={`http://localhost:3000/img/products/${product.imageCover}`}
                     alt={product.name}
                     onError={() => handleImageError(product.id)}
                   />
