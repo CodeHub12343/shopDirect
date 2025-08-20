@@ -22,6 +22,7 @@ import { useToast } from '../contexts/ToastContext';
 import { getToastMessage, getErrorMessage } from '../utils/toastMessages';
 import { deleteProduct } from '../services/apiProduct';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import Spinner from '../components/ui/Spinner';
 
 const ProductsContainer = styled.div`
   display: flex;
@@ -191,6 +192,25 @@ const ProductImagePlaceholder = styled.div`
   align-items: center;
   justify-content: center;
   color: white;
+  flex-direction: column;
+  gap: 4px;
+`;
+
+const RetryButton = styled.button`
+  background: rgba(255, 255, 255, 0.9);
+  color: #3b82f6;
+  border: none;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: white;
+    transform: scale(1.05);
+  }
 `;
 
 const ProductImageCover = styled.img`
@@ -494,6 +514,7 @@ const Products = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [imageErrors, setImageErrors] = useState(new Set());
+  const [imageLoading, setImageLoading] = useState(new Set());
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [productToEdit, setProductToEdit] = useState(null);
   const { liveProducts, isLoading, error } = useGetProducts(page, searchQuery, selectedCategory, sortBy, limit);
@@ -510,10 +531,54 @@ const Products = () => {
     return `https://shopdirect-api.onrender.com/${imagePath}`;
   }; */
   
+  // Handle image load start
+  const handleImageLoadStart = (productId) => {
+    setImageLoading(prev => new Set(prev).add(productId));
+    setImageErrors(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(productId);
+      return newSet;
+    });
+  };
+
+  // Handle image load success
+  const handleImageLoadSuccess = (productId) => {
+    setImageLoading(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(productId);
+      return newSet;
+    });
+    setImageErrors(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(productId);
+      return newSet;
+    });
+  };
+
   // Handle image load error
   const handleImageError = (productId) => {
-    setImageErrors(prev => new Set(prev).add(productId));
+    setImageLoading(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(productId);
+      return newSet;
+    });
+    // Add a small delay before marking image as failed
+    // This helps with newly created products where image might not be immediately available
+    setTimeout(() => {
+      setImageErrors(prev => new Set(prev).add(productId));
+    }, 2000); // 2 second delay
   };
+
+  // Clear image errors for a specific product (when it's successfully created/updated)
+  const clearImageError = (productId) => {
+    setImageErrors(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(productId);
+      return newSet;
+    });
+  };
+
+
 
   // Handle form actions
   const handleOpenCreateForm = () => {
@@ -756,17 +821,30 @@ const Products = () => {
       ) : (
         <ProductsGrid>
           {filteredProducts.map((product) => (
-            <ProductCard key={product.id} isOptimistic={product.__isOptimistic}>
+            <ProductCard key={product._id || product.id} isOptimistic={product.__isOptimistic}>
               <ProductImage>
-                {product.imageCover && !imageErrors.has(product.id) ? (
+                {product.imageCover && !imageErrors.has(product._id || product.id) ? (
                   <ProductImageCover 
-                  src={`https://shopdirect-api.onrender.com/img/products/${product.imageCover}`}
+                    src={product.imageCoverUrl || `https://shopdirect-api.onrender.com/img/products/${product.imageCover}`}
                     alt={product.name}
-                    onError={() => handleImageError(product.id)}
+                    onLoadStart={() => handleImageLoadStart(product._id || product.id)}
+                    onLoad={() => handleImageLoadSuccess(product._id || product.id)}
+                    onError={() => handleImageError(product._id || product.id)}
                   />
                 ) : null}
-                <ProductImagePlaceholder style={{ display: (product.imageCover && !imageErrors.has(product.id)) ? 'none' : 'flex' }}>
-                  <Package size={32} />
+                <ProductImagePlaceholder style={{ display: (product.imageCover && !imageErrors.has(product._id || product.id) && !imageLoading.has(product._id || product.id)) ? 'none' : 'flex' }}>
+                  {imageLoading.has(product._id || product.id) ? (
+                    <Spinner size="24px" />
+                  ) : (
+                    <>
+                      <Package size={32} />
+                      {product.imageCover && imageErrors.has(product._id || product.id) && (
+                        <RetryButton onClick={() => clearImageError(product._id || product.id)}>
+                          Retry
+                        </RetryButton>
+                      )}
+                    </>
+                  )}
                 </ProductImagePlaceholder>
                 {product.ratingsAverage >= 4.8 && (
                   <ProductBadge type="featured">
@@ -796,7 +874,7 @@ const Products = () => {
                 </ProductStats>
                 
                               <ProductActions>
-                <ActionButton onClick={() => navigate(`/products/${product.id}`)}>
+                <ActionButton onClick={() => navigate(`/products/${product._id || product.id}`)}>
                   <Eye size={14} />
                   View
                 </ActionButton>
@@ -811,7 +889,7 @@ const Products = () => {
                 >
                   {deleteProductMutation.isPending ? (
                     <>
-                      <Loader2 size={14} className="spinner" />
+                      <Spinner size="14px" />
                       Deleting...
                     </>
                   ) : (
@@ -896,6 +974,7 @@ const Products = () => {
         isOpen={isFormOpen}
         productToEdit={productToEdit}
         onCloseModal={handleCloseForm}
+        onProductSuccess={clearImageError}
       />
     </>
   );

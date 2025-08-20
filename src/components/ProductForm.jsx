@@ -353,7 +353,7 @@ const ErrorMessage = styled.span`
   margin-top: 3px; /* Reduced from 4px */
 `;
 
-export default function ProductForm({ productToEdit = null, onCloseModal, isOpen }) {
+export default function ProductForm({ productToEdit = null, onCloseModal, isOpen, onProductSuccess }) {
   const isEdit = Boolean(productToEdit?._id);
   const queryClient = useQueryClient();
   const { success, error: showError } = useToast();
@@ -421,7 +421,12 @@ export default function ProductForm({ productToEdit = null, onCloseModal, isOpen
       // Create a temporary product object for optimistic update
       const optimisticProduct = {
         _id: `temp-${Date.now()}`,
-        ...newProduct,
+        name: newProduct.name,
+        description: newProduct.description,
+        price: newProduct.price,
+        category: newProduct.category,
+        // Don't set imageCover in optimistic update - wait for real data
+        // This prevents image display issues
         createdAt: new Date().toISOString(),
         ratingsAverage: 0,
         ratingsQuantity: 0,
@@ -456,14 +461,25 @@ export default function ProductForm({ productToEdit = null, onCloseModal, isOpen
         );
       });
       
-      queryClient.invalidateQueries({ queryKey: ['products'] });
+      // Also update any other related queries to ensure consistency
+      queryClient.setQueryData(['product', createdProduct._id], createdProduct);
+      
+      // Clear any image errors for this product
+      if (onProductSuccess) {
+        onProductSuccess(createdProduct._id);
+      }
+      
+      // Don't invalidate queries immediately - let the cache update handle it
+      // This prevents the image from disappearing due to refetch timing issues
       onCloseModal?.();
       const message = getToastMessage('product', 'create', 'success');
       success(message.title, message.message);
     },
     onSettled: () => {
-      // Always refetch after error or success to ensure we have the latest data
-      queryClient.invalidateQueries({ queryKey: ['products'] });
+      // Only invalidate queries after a delay to ensure the cache is stable
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ['products'] });
+      }, 1000);
     },
   });
 
@@ -522,20 +538,25 @@ export default function ProductForm({ productToEdit = null, onCloseModal, isOpen
       
       queryClient.setQueryData(['product', productId], updatedProduct);
       
-      queryClient.invalidateQueries({ queryKey: ['products'] });
-      if (productToEdit?._id) {
-        queryClient.invalidateQueries({ queryKey: ['product', productToEdit._id] });
+      // Clear any image errors for this product
+      if (onProductSuccess) {
+        onProductSuccess(productId);
       }
+      
+      // Don't invalidate queries immediately - let the cache update handle it
+      // This prevents the image from disappearing due to refetch timing issues
       onCloseModal?.();
       const message = getToastMessage('product', 'update', 'success');
       success(message.title, message.message);
     },
     onSettled: () => {
-      // Always refetch after error or success to ensure we have the latest data
-      queryClient.invalidateQueries({ queryKey: ['products'] });
-      if (productToEdit?._id) {
-        queryClient.invalidateQueries({ queryKey: ['product', productToEdit._id] });
-      }
+      // Only invalidate queries after a delay to ensure the cache is stable
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ['products'] });
+        if (productToEdit?._id) {
+          queryClient.invalidateQueries({ queryKey: ['product', productToEdit._id] });
+        }
+      }, 1000);
     },
   });
 
