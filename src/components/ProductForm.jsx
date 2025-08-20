@@ -277,16 +277,16 @@ const ModalOverlay = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  padding: 20px;
+  padding: 16px; /* Reduced from 20px */
 `;
 
 const ModalContent = styled.div`
   background: ${({ theme }) => theme.colors.backgroundCard};
-  border-radius: 16px;
-  padding: 32px;
-  max-width: 800px;
+  border-radius: 12px; /* Reduced from 16px */
+  padding: 24px; /* Reduced from 32px */
+  max-width: 600px; /* Reduced from 800px */
   width: 100%;
-  max-height: 90vh;
+  max-height: 85vh; /* Reduced from 90vh */
   overflow-y: auto;
   position: relative;
   box-shadow: ${({ theme }) => theme.colors.shadowLg};
@@ -297,13 +297,13 @@ const ModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-  padding-bottom: 16px;
+  margin-bottom: 20px; /* Reduced from 24px */
+  padding-bottom: 12px; /* Reduced from 16px */
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 const ModalTitle = styled.h2`
-  font-size: 24px;
+  font-size: 20px; /* Reduced from 24px */
   font-weight: 700;
   color: ${({ theme }) => theme.colors.textPrimary};
   margin: 0;
@@ -327,7 +327,7 @@ const CloseButton = styled.button`
 const FormGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
+  gap: 16px; /* Reduced from 24px */
   
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -340,17 +340,17 @@ const FullWidthRow = styled.div`
 
 const ButtonGroup = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 10px; /* Reduced from 12px */
   justify-content: flex-end;
-  margin-top: 32px;
-  padding-top: 24px;
+  margin-top: 24px; /* Reduced from 32px */
+  padding-top: 16px; /* Reduced from 24px */
   border-top: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 const ErrorMessage = styled.span`
-  font-size: 12px;
+  font-size: 11px; /* Reduced from 12px */
   color: ${({ theme }) => theme.colors.error};
-  margin-top: 4px;
+  margin-top: 3px; /* Reduced from 4px */
 `;
 
 export default function ProductForm({ productToEdit = null, onCloseModal, isOpen }) {
