@@ -507,7 +507,7 @@ const Products = () => {
  /*  const getImageUrl = (imagePath) => {
     if (!imagePath) return null;
     if (imagePath.startsWith('http')) return imagePath;
-    return `http://localhost:3000/${imagePath}`;
+    return `https://shopdirect-api.onrender.com/${imagePath}`;
   }; */
   
   // Handle image load error
@@ -760,7 +760,7 @@ const Products = () => {
               <ProductImage>
                 {product.imageCover && !imageErrors.has(product.id) ? (
                   <ProductImageCover 
-                  src={`http://localhost:3000/img/products/${product.imageCover}`}
+                  src={`https://shopdirect-api.onrender.com/img/products/${product.imageCover}`}
                     alt={product.name}
                     onError={() => handleImageError(product.id)}
                   />

@@ -624,7 +624,7 @@ const getStatusIcon = (status) => {
 const getImageUrl = (imagePath, type = 'products') => {
   if (!imagePath) return null;
   if (imagePath.startsWith('http')) return imagePath;
-  return `http://localhost:3000/img/${type}/${imagePath}`;
+  return `https://shopdirect-api.onrender.com/img/${type}/${imagePath}`;
 };
 
 // Helper function to get user initials
@@ -917,7 +917,7 @@ const OrderDetails = () => {
                      {order.user.photo && !userPhotoError ? (
                        <UserPhoto 
                          /* src={getImageUrl(order.user.photo, 'users')} */
-                         src={`http://localhost:3000/img/users/${order?.user?.photo}`}
+                         src={`https://shopdirect-api.onrender.com/img/users/${order?.user?.photo}`}
                          alt={order.user.name}
                          onError={() => setUserPhotoError(true)}
                        />

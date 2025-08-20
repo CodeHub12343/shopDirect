@@ -504,7 +504,7 @@ const ProductDetails = () => {
   const getImageUrl = (imagePath) => {
     if (!imagePath) return null;
     if (imagePath.startsWith('http')) return imagePath;
-    return `http://localhost:3000/img/products/${imagePath}`;
+    return `https://shopdirect-api.onrender.com/img/products/${imagePath}`;
   };
 
   const handleImageChange = (index) => {
