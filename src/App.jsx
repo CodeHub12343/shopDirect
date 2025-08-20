@@ -26,6 +26,7 @@ const AppContainer = styled.div`
   display: flex;
   height: 100vh;
   background-color: var(--color-background);
+  transform-origin: top left;
 `;
 
 const MainContent = styled.main`
@@ -33,7 +34,7 @@ const MainContent = styled.main`
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  margin-left: 280px; /* Account for fixed sidebar width */
+  margin-left: 224px; /* Reduced from 280px for 80% zoom (280 * 0.8 = 224) */
   
   @media (max-width: 1024px) {
     margin-left: 0;
@@ -42,7 +43,7 @@ const MainContent = styled.main`
 
 const ContentArea = styled.div`
   flex: 1;
-  padding: 24px;
+  padding: 19px; /* Reduced from 24px for 80% zoom (24 * 0.8 = 19.2) */
   overflow-y: auto;
 `;
 

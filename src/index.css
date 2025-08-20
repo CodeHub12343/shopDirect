@@ -112,6 +112,11 @@
   box-sizing: border-box;
 }
 
+/* 80% Zoom Effect - Global Scaling */
+html {
+  font-size: 80%; /* This creates the 80% zoom effect */
+}
+
 body {
   font-family: var(--font-primary);
   font-size: var(--text-base);
@@ -120,6 +125,7 @@ body {
   background-color: var(--color-background);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transform-origin: top left;
 }
 
 /* Typography Classes */

@@ -29,7 +29,7 @@ const SidebarBackdrop = styled.div`
 `;
 
 const SidebarContainer = styled.aside`
-  width: 280px;
+  width: 224px; /* Reduced from 280px for 80% zoom (280 * 0.8 = 224) */
   background: var(--color-surface);
   border-right: 1px solid var(--color-border);
   height: 100vh;

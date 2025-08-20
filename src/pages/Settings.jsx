@@ -443,7 +443,7 @@ const formatDate = (dateString) => {
 const getImageUrl = (imagePath, type = 'users') => {
   if (!imagePath) return null;
   if (imagePath.startsWith('http')) return imagePath;
-  return `https://shopdirect-api.onrender.com/img/${type}/${imagePath}`;
+  return `https://shopdirect-api.onrender.com/api/v4/images/${type}/${imagePath}`;
 };
 
 const Settings = () => {

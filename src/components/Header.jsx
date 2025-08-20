@@ -8,7 +8,7 @@ import ThemeToggle from "./ThemeToggle";
 const HeaderContainer = styled.header`
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
-  padding: var(--spacing-md) var(--spacing-lg);
+  padding: 13px 19px; /* Reduced from var(--spacing-md) var(--spacing-lg) for 80% zoom */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -56,7 +56,7 @@ const SearchInput = styled.input`
   font-family: var(--font-primary);
   font-size: var(--text-sm);
   color: var(--color-text);
-  width: 300px;
+  width: 240px; /* Reduced from 300px for 80% zoom (300 * 0.8 = 240) */
   transition: var(--transition-normal);
   
   &:focus {
