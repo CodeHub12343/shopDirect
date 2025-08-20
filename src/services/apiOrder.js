@@ -3,26 +3,12 @@ import axios from "axios";
 // Create axios instance with base configuration
 const api = axios.create({
   baseURL: "https://shopdirect-api.onrender.com/api/v4",
-  withCredentials: false, // ❌ Don't send cookies for cross-domain
+  withCredentials: true,
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
   },
 });
-
-// Add request interceptor to include JWT token from localStorage
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('jwt');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
 
 // Add request interceptor to handle errors
 api.interceptors.response.use(

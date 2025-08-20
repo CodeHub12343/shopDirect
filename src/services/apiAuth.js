@@ -3,26 +3,12 @@ import axios from "axios";
 // Create axios instance with base configuration
 const api = axios.create({
   baseURL: "https://shopdirect-api.onrender.com/api/v4",
-  withCredentials: false, // ❌ Don't send cookies for cross-domain
+  withCredentials: true,
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
   },
 });
-
-// Add request interceptor to include JWT token from localStorage
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('jwt');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
 
 // Add response interceptor to handle errors
 api.interceptors.response.use(
@@ -43,12 +29,6 @@ export async function signup({ email, password, passwordConfirm, name }) {
     });
 
     console.log("Signup response:", res.data);
-    
-    // Store JWT token in localStorage
-    if (res.data.token) {
-      localStorage.setItem('jwt', res.data.token);
-    }
-    
     return res.data;
   } catch (err) {
     console.error("Signup error:", err.response?.data || err.message);
@@ -66,12 +46,6 @@ export async function login({ email, password }) {
     });
 
     console.log("Login response:", res.data);
-    
-    // Store JWT token in localStorage
-    if (res.data.token) {
-      localStorage.setItem('jwt', res.data.token);
-    }
-    
     return res.data;
   } catch (err) {
     console.error("Login error:", err.response?.data || err.message);
@@ -97,22 +71,11 @@ export async function getCurrentUser() {
 
 export async function logoutUser() {
   try {
-    // Remove JWT token from localStorage
-    localStorage.removeItem('jwt');
-    
-    // Call backend logout (optional, for server-side cleanup)
-    try {
-      const res = await api.get("/users/logout");
-      console.log("Logout response:", res.data);
-    } catch (backendError) {
-      console.log("Backend logout failed, but local logout successful:", backendError);
-    }
-    
-    return { status: 'success' };
+    const res = await api.get("/users/logout");
+    console.log("Logout response:", res.data);
+    return res.data;
   } catch (err) {
-    // Even if there's an error, clear local token
-    localStorage.removeItem('jwt');
-    throw new Error("Error during logout");
+    throw new Error(err.response?.data?.message || "Error during logout");
   }
 }
 
